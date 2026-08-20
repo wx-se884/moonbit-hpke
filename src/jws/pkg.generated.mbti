@@ -1,0 +1,29 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "wx-se884/hpke/src/jws"
+
+import {
+  "moonbitlang/core/debug",
+  "wx-se884/hpke/src/core",
+}
+
+// Values
+pub fn jws_parse_header(String) -> JwsHeader raise @core.CoreError
+
+pub fn jws_sign(String, Bytes, Bytes, typ? : String, kid? : String) -> String raise @core.CoreError
+
+pub fn jws_verify(String, Bytes) -> (JwsHeader, Bytes) raise @core.CoreError
+
+// Errors
+
+// Types and methods
+pub(all) struct JwsHeader {
+  alg : String
+  typ : String?
+  kid : String?
+  crit : Array[String]?
+} derive(Eq, @debug.Debug)
+pub fn JwsHeader::to_json_string(Self) -> String
+
+// Type aliases
+
+// Traits
