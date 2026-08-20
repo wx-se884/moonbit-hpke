@@ -1,0 +1,12 @@
+import {
+  "wx-se884/hpke/src/core",
+  "wx-se884/hpke/src/hpke",
+  "wx-se884/hpke/src/jwk",
+  "wx-se884/hpke/src/jws",
+  "wx-se884/hpke/src/jwe",
+  "wx-se884/hpke/src/jwt",
+}
+
+options(
+  "is-main": true,
+)
