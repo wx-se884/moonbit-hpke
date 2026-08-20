@@ -1,0 +1,29 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "wx-se884/hpke/src/jwe"
+
+import {
+  "moonbitlang/core/debug",
+  "wx-se884/hpke/src/core",
+}
+
+// Values
+pub fn jwe_decrypt(String, Bytes) -> (JweHeader, Bytes) raise @core.CoreError
+
+pub fn jwe_encrypt(String, String, Bytes, Bytes, Bytes, kid? : String, cek_override? : Bytes, ephemeral_key? : Bytes) -> String raise @core.CoreError
+
+pub fn jwe_parse_header(String) -> JweHeader raise @core.CoreError
+
+// Errors
+
+// Types and methods
+pub(all) struct JweHeader {
+  alg : String
+  enc : String
+  kid : String?
+  encap : String?
+} derive(Eq, @debug.Debug)
+pub fn JweHeader::to_json_string(Self) -> String
+
+// Type aliases
+
+// Traits
