@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    name: Build & Test (MoonBit Native, JS, Wasm)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install MoonBit Toolchain
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> $GITHUB_PATH
+
+      - name: Check Code Formatting
+        run: |
+          moon fmt --dry-run
+
+      - name: Typecheck and Lint
+        run: |
+          moon check --deny-warn
+
+      - name: Run Native Unit Tests
+        run: |
+          moon test --target native
+
+      - name: Run JS Unit Tests
+        run: |
+          moon test --target js
+
+      - name: Run Wasm Unit Tests
+        run: |
+          moon test --target wasm
+
+      - name: Build and Run CLI Demonstration
+        run: |
+          moon run cmd/hpke-cli
