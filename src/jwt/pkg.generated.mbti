@@ -1,0 +1,40 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "wx-se884/hpke/src/jwt"
+
+import {
+  "moonbitlang/core/debug",
+  "wx-se884/hpke/src/core",
+}
+
+// Values
+pub fn jwt_sign(Claims, String, Bytes, kid? : String) -> String raise @core.CoreError
+
+pub fn jwt_verify(String, Bytes, now? : Int64, clock_skew? : Int64, expected_iss? : String, expected_aud? : String) -> Claims raise @core.CoreError
+
+pub fn parse_claims(String) -> Claims
+
+// Errors
+
+// Types and methods
+pub(all) struct Claims {
+  iss : String?
+  sub : String?
+  aud : String?
+  exp : Int64?
+  nbf : Int64?
+  iat : Int64?
+  jti : String?
+} derive(Eq, @debug.Debug)
+pub fn Claims::new(iss? : String, sub? : String, aud? : String, exp? : Int64, nbf? : Int64, iat? : Int64, jti? : String) -> Self
+pub fn Claims::to_json_string(Self) -> String
+pub fn Claims::validate(Self, Int64, Int64, expected_iss? : String, expected_aud? : String) -> Bool
+
+pub(all) struct ReplayCache {
+  seen : Array[String]
+}
+pub fn ReplayCache::check_and_add(Self, String) -> Bool
+pub fn ReplayCache::new() -> Self
+
+// Type aliases
+
+// Traits
