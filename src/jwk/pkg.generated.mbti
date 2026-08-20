@@ -1,0 +1,51 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "wx-se884/hpke/src/jwk"
+
+import {
+  "moonbitlang/core/debug",
+  "wx-se884/hpke/src/core",
+}
+
+// Values
+
+// Errors
+
+// Types and methods
+pub(all) struct Jwk {
+  kty : String
+  crv : String?
+  x : String?
+  y : String?
+  d : String?
+  k : String?
+  n : String?
+  e : String?
+  kid : String?
+  use_opt : String?
+  alg : String?
+} derive(Eq, @debug.Debug)
+pub fn Jwk::is_private(Self) -> Bool
+pub fn Jwk::new_ec_p256(Bytes, priv_key? : Bytes, kid? : String, alg? : String) -> Self raise @core.CoreError
+pub fn Jwk::new_oct(Bytes, kid? : String, alg? : String) -> Self
+pub fn Jwk::new_okp_ed25519(Bytes, priv_key? : Bytes, kid? : String) -> Self
+pub fn Jwk::new_okp_x25519(Bytes, priv_key? : Bytes, kid? : String) -> Self
+pub fn Jwk::thumbprint_sha256(Self) -> String raise @core.CoreError
+pub fn Jwk::to_public(Self) -> Self
+
+pub(all) struct JwkSet {
+  keys : Array[Jwk]
+} derive(Eq, @debug.Debug)
+pub fn JwkSet::find_by_kid(Self, String) -> Jwk?
+pub fn JwkSet::new(Array[Jwk]) -> Self
+pub fn JwkSet::to_public(Self) -> Self
+
+pub(all) enum KeyType {
+  OCT
+  OKP
+  EC
+  RSA
+} derive(Eq, @debug.Debug)
+
+// Type aliases
+
+// Traits
