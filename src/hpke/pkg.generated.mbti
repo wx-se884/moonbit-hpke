@@ -1,0 +1,113 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "wx-se884/hpke/src/hpke"
+
+import {
+  "moonbitlang/core/debug",
+  "wx-se884/hpke/src/core",
+}
+
+// Values
+pub fn aead_open(AeadId, Bytes, Bytes, Bytes, Bytes) -> Bytes raise @core.CoreError
+
+pub fn aead_seal(AeadId, Bytes, Bytes, Bytes, Bytes) -> Bytes raise @core.CoreError
+
+pub fn hpke_compute_nonce(Bytes, UInt64) -> Bytes
+
+pub fn hpke_open_auth(HpkeSuite, Bytes, Bytes, Bytes, Bytes, Bytes, Bytes) -> Bytes raise @core.CoreError
+
+pub fn hpke_open_base(HpkeSuite, Bytes, Bytes, Bytes, Bytes, Bytes) -> Bytes raise @core.CoreError
+
+pub fn hpke_open_psk(HpkeSuite, Bytes, Bytes, Bytes, Bytes, Bytes, Bytes, Bytes) -> Bytes raise @core.CoreError
+
+pub fn hpke_seal_auth_deterministic(HpkeSuite, Bytes, Bytes, Bytes, Bytes, Bytes, Bytes) -> (Bytes, Bytes) raise @core.CoreError
+
+pub fn hpke_seal_base_deterministic(HpkeSuite, Bytes, Bytes, Bytes, Bytes, Bytes) -> (Bytes, Bytes) raise @core.CoreError
+
+pub fn hpke_seal_psk_deterministic(HpkeSuite, Bytes, Bytes, Bytes, Bytes, Bytes, Bytes, Bytes) -> (Bytes, Bytes) raise @core.CoreError
+
+pub fn hpke_setup_auth_r(HpkeSuite, Bytes, Bytes, Bytes, Bytes) -> HpkeContext raise @core.CoreError
+
+pub fn hpke_setup_auth_s_deterministic(HpkeSuite, Bytes, Bytes, Bytes, Bytes) -> (Bytes, HpkeContext) raise @core.CoreError
+
+pub fn hpke_setup_base_r(HpkeSuite, Bytes, Bytes, Bytes) -> HpkeContext raise @core.CoreError
+
+pub fn hpke_setup_base_s_deterministic(HpkeSuite, Bytes, Bytes, Bytes) -> (Bytes, HpkeContext) raise @core.CoreError
+
+pub fn hpke_setup_psk_r(HpkeSuite, Bytes, Bytes, Bytes, Bytes, Bytes) -> HpkeContext raise @core.CoreError
+
+pub fn hpke_setup_psk_s_deterministic(HpkeSuite, Bytes, Bytes, Bytes, Bytes, Bytes) -> (Bytes, HpkeContext) raise @core.CoreError
+
+pub fn hpke_suite_id(HpkeSuite) -> Bytes
+
+pub fn kdf_expand(KdfId, Bytes, Bytes, Int) -> Bytes
+
+pub fn kdf_extract(KdfId, Bytes, Bytes) -> Bytes
+
+pub fn kdf_labeled_expand(KdfId, Bytes, Bytes, String, Bytes, Int) -> Bytes
+
+pub fn kdf_labeled_extract(KdfId, Bytes, Bytes, String, Bytes) -> Bytes
+
+pub fn kem_auth_decap(KemId, Bytes, Bytes, Bytes) -> Bytes raise @core.CoreError
+
+pub fn kem_auth_encap_deterministic(KemId, Bytes, Bytes, Bytes) -> (Bytes, Bytes) raise @core.CoreError
+
+pub fn kem_decap(KemId, Bytes, Bytes) -> Bytes raise @core.CoreError
+
+pub fn kem_derive_public_key(KemId, Bytes) -> Bytes raise @core.CoreError
+
+pub fn kem_dh(KemId, Bytes, Bytes) -> Bytes raise @core.CoreError
+
+pub fn kem_encap_deterministic(KemId, Bytes, Bytes) -> (Bytes, Bytes) raise @core.CoreError
+
+// Errors
+
+// Types and methods
+pub(all) enum AeadId {
+  AES_128_GCM
+  AES_256_GCM
+  CHACHA20_POLY1305
+  EXPORT_ONLY
+} derive(Eq, @debug.Debug)
+pub fn AeadId::n_k(Self) -> Int
+pub fn AeadId::n_n(Self) -> Int
+pub fn AeadId::n_t(Self) -> Int
+pub fn AeadId::value(Self) -> Int
+
+pub(all) struct HpkeContext {
+  suite : HpkeSuite
+  key : Bytes
+  base_nonce : Bytes
+  exporter_secret : Bytes
+  mut seq : UInt64
+}
+pub fn HpkeContext::export_key(Self, Bytes, Int) -> Bytes
+pub fn HpkeContext::open(Self, Bytes, Bytes) -> Bytes raise @core.CoreError
+pub fn HpkeContext::seal(Self, Bytes, Bytes) -> Bytes raise @core.CoreError
+
+pub(all) struct HpkeSuite {
+  kem : KemId
+  kdf : KdfId
+  aead : AeadId
+} derive(Eq, @debug.Debug)
+
+pub(all) enum KdfId {
+  HKDF_SHA256
+  HKDF_SHA384
+  HKDF_SHA512
+} derive(Eq, @debug.Debug)
+pub fn KdfId::n_h(Self) -> Int
+pub fn KdfId::value(Self) -> Int
+
+pub(all) enum KemId {
+  DHKEM_P256_HKDF_SHA256
+  DHKEM_X25519_HKDF_SHA256
+} derive(Eq, @debug.Debug)
+pub fn KemId::n_enc(Self) -> Int
+pub fn KemId::n_pk(Self) -> Int
+pub fn KemId::n_secret(Self) -> Int
+pub fn KemId::n_sk(Self) -> Int
+pub fn KemId::value(Self) -> Int
+
+// Type aliases
+
+// Traits
