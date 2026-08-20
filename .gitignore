@@ -1,0 +1,10 @@
+_build/
+target/
+.mooncakes/
+.repos/
+*.exe
+*.obj
+*.lib
+*.exp
+.DS_Store
+.system_generated/
