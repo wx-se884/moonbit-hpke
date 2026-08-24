@@ -35,6 +35,9 @@ $rows = foreach ($file in $files) {
 $implementation = ($rows | Where-Object Kind -eq "implementation" | Measure-Object Lines -Sum).Sum
 $tests = ($rows | Where-Object Kind -eq "test" | Measure-Object Lines -Sum).Sum
 $cli = ($rows | Where-Object Kind -eq "cli" | Measure-Object Lines -Sum).Sum
+$implementationCode = ($rows | Where-Object Kind -eq "implementation" | Measure-Object Code -Sum).Sum
+$testCode = ($rows | Where-Object Kind -eq "test" | Measure-Object Code -Sum).Sum
+$cliCode = ($rows | Where-Object Kind -eq "cli" | Measure-Object Code -Sum).Sum
 $total = ($rows | Measure-Object Lines -Sum).Sum
 $nonBlankTotal = ($rows | Measure-Object NonBlank -Sum).Sum
 $codeTotal = ($rows | Measure-Object Code -Sum).Sum
@@ -45,6 +48,9 @@ Write-Host ("MBT files:          {0}" -f $rows.Count)
 Write-Host ("Implementation lines: {0}" -f $implementation)
 Write-Host ("Test lines:           {0}" -f $tests)
 Write-Host ("CLI lines:            {0}" -f $cli)
+Write-Host ("Implementation code:  {0}" -f $implementationCode)
+Write-Host ("Test code:            {0}" -f $testCode)
+Write-Host ("CLI code:             {0}" -f $cliCode)
 Write-Host ("Physical .mbt lines:  {0}" -f $total)
 Write-Host ("Nonblank .mbt lines:  {0}" -f $nonBlankTotal)
 Write-Host ("Non-comment code:     {0}" -f $codeTotal)
