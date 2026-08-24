@@ -65,6 +65,7 @@ jobs:
           git diff --exit-code -- '*.mbti'
 
       - name: Run default backend tests with coverage
+        if: matrix.os == 'ubuntu-latest'
         run: moon test --deny-warn --enable-coverage --no-parallelize
 
       - name: Run native tests
