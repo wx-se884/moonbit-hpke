@@ -40,8 +40,8 @@ jobs:
         shell: bash
         run: |
           moon --version
-          moonc --version
-          version="$(moonc --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -n 1 | tr '.' ' ')"
+          moonc -v
+          version="$(moonc -v | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -n 1 | tr '.' ' ')"
           if [[ -z "$version" ]]; then
             echo "Unable to parse the MoonBit compiler version"
             exit 1
