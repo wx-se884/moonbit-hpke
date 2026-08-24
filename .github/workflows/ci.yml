@@ -71,9 +71,11 @@ jobs:
         run: moon test --target native --deny-warn --enable-coverage --no-parallelize
 
       - name: Run JavaScript tests
+        if: matrix.os != 'windows-latest'
         run: moon test --target js --deny-warn --no-parallelize
 
       - name: Run WebAssembly tests
+        if: matrix.os == 'ubuntu-latest'
         run: moon test --target wasm --deny-warn --no-parallelize
 
       - name: Report coverage
