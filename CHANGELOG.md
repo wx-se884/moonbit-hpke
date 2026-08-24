@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 - 2026-08-24
 
 - Added AuthPSK mode setup, seal, and open APIs for RFC 9180 coverage.
 - Added boundary tests for encoding, arithmetic, cryptographic primitives, HPKE contexts, JOSE serialization, JWT validation, tampering, and malformed inputs.
