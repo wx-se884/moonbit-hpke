@@ -102,3 +102,38 @@ pub fn hpke_open_psk(
   let ctx = hpke_setup_psk_r(suite, enc, sk_r, info, psk, psk_id)
   ctx.open(ct, aad)
 }
+
+///|
+pub fn hpke_seal_auth_psk_deterministic(
+  suite : HpkeSuite,
+  pk_r : Bytes,
+  info : Bytes,
+  aad : Bytes,
+  pt : Bytes,
+  sk_s : Bytes,
+  sk_e : Bytes,
+  psk : Bytes,
+  psk_id : Bytes,
+) -> (Bytes, Bytes) raise @core.CoreError {
+  let (enc, ctx) = hpke_setup_auth_psk_s_deterministic(
+    suite, pk_r, info, sk_s, sk_e, psk, psk_id,
+  )
+  let ct = ctx.seal(pt, aad)
+  (enc, ct)
+}
+
+///|
+pub fn hpke_open_auth_psk(
+  suite : HpkeSuite,
+  enc : Bytes,
+  sk_r : Bytes,
+  info : Bytes,
+  aad : Bytes,
+  ct : Bytes,
+  pk_s : Bytes,
+  psk : Bytes,
+  psk_id : Bytes,
+) -> Bytes raise @core.CoreError {
+  let ctx = hpke_setup_auth_psk_r(suite, enc, sk_r, info, pk_s, psk, psk_id)
+  ctx.open(ct, aad)
+}

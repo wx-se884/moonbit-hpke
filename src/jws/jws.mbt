@@ -32,6 +32,21 @@ pub fn JwsHeader::to_json_string(self : JwsHeader) -> String {
     Some(k) => buf.write_string(",\"kid\":\"" + k + "\"")
     None => ()
   }
+  match self.crit {
+    Some(items) => {
+      buf.write_string(",\"crit\":[")
+      let mut first = true
+      for item in items {
+        if !first {
+          buf.write_string(",")
+        }
+        buf.write_string("\"" + item + "\"")
+        first = false
+      }
+      buf.write_string("]")
+    }
+    None => ()
+  }
   buf.write_string("}")
   buf.to_string()
 }
@@ -83,7 +98,34 @@ pub fn jws_parse_header(json_str : String) -> JwsHeader raise @core.CoreError {
     None
   }
 
-  { alg, typ, kid, crit: None }
+  let crit_idx = @core.string_index_of(json_str, "\"crit\":[")
+  let crit = if crit_idx >= 0 {
+    let start = crit_idx + 8
+    let end_idx = @core.string_index_of(json_str, "]", start~)
+    if end_idx < 0 {
+      None
+    } else {
+      let content = @core.string_slice(json_str, start, end_idx - start)
+      if content == "" {
+        Some([])
+      } else {
+        let items : Array[String] = []
+        for raw in @core.string_split(content, "\",\"") {
+          let item = if raw.length() >= 2 {
+            @core.string_slice(raw, 1, raw.length() - 2)
+          } else {
+            raw
+          }
+          items.push(item)
+        }
+        Some(items)
+      }
+    }
+  } else {
+    None
+  }
+
+  { alg, typ, kid, crit }
 }
 
 ///|

@@ -1,0 +1,124 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "wx-se884/hpke/src/core"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn base64_decode(String) -> Bytes raise CoreError
+
+pub fn base64_encode(Bytes, url_safe? : Bool, padding? : Bool) -> String
+
+pub fn base64url_decode(String) -> Bytes raise CoreError
+
+pub fn base64url_encode(Bytes) -> String
+
+pub fn bytes_concat(Bytes, Bytes) -> Bytes
+
+pub fn bytes_concat_all(Array[Bytes]) -> Bytes
+
+pub fn bytes_copy_to_fixed(Bytes, Int, FixedArray[Byte], Int, Int) -> Unit
+
+pub fn bytes_equal(Bytes, Bytes) -> Bool
+
+pub fn bytes_from_array(Array[Byte]) -> Bytes
+
+pub fn bytes_slice(Bytes, Int, Int) -> Bytes
+
+pub fn bytes_to_array(Bytes) -> Array[Byte]
+
+pub fn bytes_xor(Bytes, Bytes) -> Bytes
+
+pub fn bytes_zero(Int) -> Bytes
+
+pub fn constant_time_compare(Bytes, Bytes) -> Bool
+
+pub fn get_u16_be(Bytes, Int) -> Int
+
+pub fn get_u32_be(Bytes, Int) -> UInt
+
+pub fn get_u32_le(Bytes, Int) -> UInt
+
+pub fn get_u64_be(Bytes, Int) -> UInt64
+
+pub fn get_u64_le(Bytes, Int) -> UInt64
+
+pub fn hex_decode(String) -> Bytes raise CoreError
+
+pub fn hex_encode(Bytes) -> String
+
+pub fn parse_int64(String) -> Int64?
+
+pub fn pkcs7_pad(Bytes, Int) -> Bytes
+
+pub fn pkcs7_unpad(Bytes) -> Bytes raise CoreError
+
+pub fn put_u16_be(Int) -> Bytes
+
+pub fn put_u32_be(UInt) -> Bytes
+
+pub fn put_u32_le(UInt) -> Bytes
+
+pub fn put_u64_be(UInt64) -> Bytes
+
+pub fn put_u64_le(UInt64) -> Bytes
+
+pub fn string_index_of(String, String, start? : Int) -> Int
+
+pub fn string_slice(String, Int, Int) -> String
+
+pub fn string_split(String, String) -> Array[String]
+
+pub fn string_to_utf8_bytes(String) -> Bytes
+
+pub fn utf8_bytes_to_string(Bytes) -> String raise CoreError
+
+pub fn zeroize_fixed(FixedArray[Byte]) -> Unit
+
+// Errors
+pub(all) suberror CoreError {
+  InvalidPadding(String)
+  BufferUnderflow(String)
+  InvalidLength(String)
+  InvalidEncoding(String)
+  CryptoError(String)
+} derive(Eq, @debug.Debug)
+
+// Types and methods
+pub(all) struct BigNat {
+  limbs : Array[UInt]
+} derive(Eq, @debug.Debug)
+pub fn BigNat::add(Self, Self) -> Self
+pub fn BigNat::add_mod(Self, Self, Self) -> Self raise CoreError
+pub fn BigNat::bit_length(Self) -> Int
+pub fn BigNat::compare(Self, Self) -> Int
+pub fn BigNat::div(Self, Self) -> Self raise CoreError
+pub fn BigNat::div_rem(Self, Self) -> (Self, Self) raise CoreError
+pub fn BigNat::from_bytes_be(Bytes) -> Self
+pub fn BigNat::from_bytes_le(Bytes) -> Self
+pub fn BigNat::from_uint(UInt) -> Self
+pub fn BigNat::from_uint64(UInt64) -> Self
+pub fn BigNat::inv_mod(Self, Self) -> Self raise CoreError
+pub fn BigNat::is_even(Self) -> Bool
+pub fn BigNat::is_one(Self) -> Bool
+pub fn BigNat::is_zero(Self) -> Bool
+pub fn BigNat::mul(Self, Self) -> Self
+pub fn BigNat::mul_digit(Self, UInt) -> Self
+pub fn BigNat::mul_mod(Self, Self, Self) -> Self raise CoreError
+pub fn BigNat::one() -> Self
+pub fn BigNat::pow_mod(Self, Self, Self) -> Self raise CoreError
+pub fn BigNat::rem(Self, Self) -> Self raise CoreError
+pub fn BigNat::shl_bits(Self, Int) -> Self
+pub fn BigNat::shl_limbs(Self, Int) -> Self
+pub fn BigNat::shr_bits(Self, Int) -> Self
+pub fn BigNat::sub(Self, Self) -> Self raise CoreError
+pub fn BigNat::sub_mod(Self, Self, Self) -> Self raise CoreError
+pub fn BigNat::test_bit(Self, Int) -> Bool
+pub fn BigNat::to_bytes_be(Self, size? : Int) -> Bytes
+pub fn BigNat::to_bytes_le(Self, size? : Int) -> Bytes
+pub fn BigNat::zero() -> Self
+
+// Type aliases
+
+// Traits

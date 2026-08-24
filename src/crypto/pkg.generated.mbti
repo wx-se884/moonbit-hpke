@@ -1,0 +1,123 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "wx-se884/hpke/src/crypto"
+
+import {
+  "moonbitlang/core/debug",
+  "wx-se884/hpke/src/core",
+}
+
+// Values
+pub fn aes_gcm_decrypt(Bytes, Bytes, Bytes, Bytes, Bytes) -> Bytes raise @core.CoreError
+
+pub fn aes_gcm_encrypt(Bytes, Bytes, Bytes, Bytes) -> (Bytes, Bytes) raise @core.CoreError
+
+pub fn aes_gcm_open(Bytes, Bytes, Bytes, Bytes) -> Bytes raise @core.CoreError
+
+pub fn aes_gcm_seal(Bytes, Bytes, Bytes, Bytes) -> Bytes raise @core.CoreError
+
+pub fn aes_key_unwrap(Bytes, Bytes) -> Bytes raise @core.CoreError
+
+pub fn aes_key_wrap(Bytes, Bytes) -> Bytes raise @core.CoreError
+
+pub fn chacha20_block(Bytes, UInt, Bytes) -> Bytes raise @core.CoreError
+
+pub fn chacha20_process(Bytes, UInt, Bytes, Bytes) -> Bytes raise @core.CoreError
+
+pub fn chacha20poly1305_decrypt(Bytes, Bytes, Bytes, Bytes, Bytes) -> Bytes raise @core.CoreError
+
+pub fn chacha20poly1305_encrypt(Bytes, Bytes, Bytes, Bytes) -> (Bytes, Bytes) raise @core.CoreError
+
+pub fn chacha20poly1305_open(Bytes, Bytes, Bytes, Bytes) -> Bytes raise @core.CoreError
+
+pub fn chacha20poly1305_seal(Bytes, Bytes, Bytes, Bytes) -> Bytes raise @core.CoreError
+
+pub fn ed25519_public_from_seed(Bytes) -> Bytes raise @core.CoreError
+
+pub fn ed25519_sign(Bytes, Bytes) -> Bytes raise @core.CoreError
+
+pub fn ed25519_verify(Bytes, Bytes, Bytes) -> Bool raise @core.CoreError
+
+pub fn hkdf_expand_sha256(Bytes, Bytes, Int) -> Bytes
+
+pub fn hkdf_expand_sha384(Bytes, Bytes, Int) -> Bytes
+
+pub fn hkdf_expand_sha512(Bytes, Bytes, Int) -> Bytes
+
+pub fn hkdf_extract_sha256(Bytes, Bytes) -> Bytes
+
+pub fn hkdf_extract_sha384(Bytes, Bytes) -> Bytes
+
+pub fn hkdf_extract_sha512(Bytes, Bytes) -> Bytes
+
+pub fn hkdf_sha256(Bytes, Bytes, Bytes, Int) -> Bytes
+
+pub fn hkdf_sha384(Bytes, Bytes, Bytes, Int) -> Bytes
+
+pub fn hkdf_sha512(Bytes, Bytes, Bytes, Int) -> Bytes
+
+pub fn hmac_sha256(Bytes, Bytes) -> Bytes
+
+pub fn hmac_sha384(Bytes, Bytes) -> Bytes
+
+pub fn hmac_sha512(Bytes, Bytes) -> Bytes
+
+pub fn p256_ecdh(Bytes, Bytes) -> Bytes raise @core.CoreError
+
+pub fn p256_ecdsa_verify(Bytes, Bytes, Bytes, Bytes) -> Bool raise @core.CoreError
+
+pub fn p256_public_from_private(Bytes) -> Bytes raise @core.CoreError
+
+pub fn p256_scalar_mult_affine(@core.BigNat, @core.BigNat, @core.BigNat) -> (@core.BigNat, @core.BigNat) raise @core.CoreError
+
+pub fn pkcs1_v15_sign_sha256(RsaPrivateKey, Bytes) -> Bytes raise @core.CoreError
+
+pub fn pkcs1_v15_verify_sha256(RsaPublicKey, Bytes, Bytes) -> Bool raise @core.CoreError
+
+pub fn poly1305_mac(Bytes, Bytes) -> Bytes raise @core.CoreError
+
+pub fn rsa_oaep_decrypt(RsaPrivateKey, Bytes, label? : Bytes) -> Bytes raise @core.CoreError
+
+pub fn rsa_oaep_encrypt(RsaPublicKey, Bytes, label? : Bytes, seed~ : Bytes) -> Bytes raise @core.CoreError
+
+pub fn sha256(Bytes) -> Bytes
+
+pub fn sha384(Bytes) -> Bytes
+
+pub fn sha512(Bytes) -> Bytes
+
+pub fn x25519(Bytes, Bytes) -> Bytes raise @core.CoreError
+
+pub fn x25519_base(Bytes) -> Bytes raise @core.CoreError
+
+// Errors
+
+// Types and methods
+pub(all) struct AesKey {
+  round_keys : FixedArray[UInt]
+  num_rounds : Int
+}
+pub fn AesKey::decrypt_block(Self, Bytes, Int) -> Bytes
+pub fn AesKey::encrypt_block(Self, Bytes, Int) -> Bytes
+pub fn AesKey::new(Bytes) -> Self raise @core.CoreError
+
+pub(all) struct RsaPrivateKey {
+  n : @core.BigNat
+  e : @core.BigNat
+  d : @core.BigNat
+  p : @core.BigNat?
+  q : @core.BigNat?
+  dp : @core.BigNat?
+  dq : @core.BigNat?
+  qi : @core.BigNat?
+} derive(Eq, @debug.Debug)
+pub fn RsaPrivateKey::decrypt_raw(Self, @core.BigNat) -> @core.BigNat raise @core.CoreError
+
+pub(all) struct RsaPublicKey {
+  n : @core.BigNat
+  e : @core.BigNat
+} derive(Eq, @debug.Debug)
+pub fn RsaPublicKey::encrypt_raw(Self, @core.BigNat) -> @core.BigNat raise @core.CoreError
+
+// Type aliases
+
+// Traits

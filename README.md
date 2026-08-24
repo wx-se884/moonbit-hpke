@@ -1,195 +1,130 @@
 # moonbit-hpke
 
 [![MoonBit](https://img.shields.io/badge/Language-MoonBit-purple.svg)](https://www.moonbitlang.com/)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![RFC 9180](https://img.shields.io/badge/RFC-9180%20(HPKE)-brightgreen.svg)](https://www.rfc-editor.org/rfc/rfc9180.html)
-[![RFC 7515/7516/7517/7519](https://img.shields.io/badge/RFC-JOSE%20Suite-orange.svg)](https://datatracker.ietf.org/doc/html/rfc7515)
-[![CI](https://github.com/wx-se884/moonbit-hpke/actions/workflows/ci.yml/badge.svg)](https://github.com/wx-se884/moonbit-hpke/actions)
+[![CI](https://github.com/wx-se884/moonbit-hpke/actions/workflows/ci.yml/badge.svg)](https://github.com/wx-se884/moonbit-hpke/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 
-A pure **MoonBit** production-grade cryptographic security suite implementing **RFC 9180 Hybrid Public Key Encryption (HPKE)** and the complete **JOSE (Javascript Object Signing and Encryption)** standard ecosystem (JWK, JWS, JWE, JWT).
+Pure MoonBit implementations of RFC 9180 Hybrid Public Key Encryption (HPKE) and the JOSE security standards: JWK, JWS, JWE, and JWT.
 
-Zero external C/FFI dependencies. Fully portable across native binaries, WebAssembly (Wasm), and JavaScript runtimes.
+## Project positioning
 
----
+`moonbit-hpke` is a dependency-light security building block for MoonBit applications that need interoperable encryption, signing, key representation, or token validation. The implementation is written in MoonBit and does not require external C libraries or FFI bindings.
 
-## Key Features
+The repository is organized as independent packages:
 
-- **RFC 9180 Hybrid Public Key Encryption (HPKE)**:
-  - **KEMs**: `DHKEM(X25519, HKDF-SHA256)` and `DHKEM(P-256, HKDF-SHA256)`.
-  - **KDFs**: `HKDF-SHA256`, `HKDF-SHA384`, `HKDF-SHA512`.
-  - **AEADs**: `AES-128-GCM`, `AES-256-GCM`, `ChaCha20-Poly1305`, `Export-Only`.
-  - **Modes Supported**: Base (mode 0), PSK (mode 1), Auth (mode 2), AuthPSK (mode 3).
-  - Single-shot (`seal` / `open`) and stateful streaming Context with sequence counter ratcheting and secret exporting.
+- `wx-se884/hpke/src/core` — byte utilities, Base64URL, Hex, PKCS#7, constant-time comparison, and `BigNat`.
+- `wx-se884/hpke/src/crypto` — SHA-2, HMAC, HKDF, AES/AES-GCM, AES-KW, ChaCha20-Poly1305, X25519, Ed25519, P-256, and RSA primitives.
+- `wx-se884/hpke/src/hpke` — RFC 9180 suites, Base/Auth/PSK/AuthPSK modes, contexts, sequence ratcheting, and exporters.
+- `wx-se884/hpke/src/jwk` — JWK/JWKS values and RFC 7638 SHA-256 thumbprints.
+- `wx-se884/hpke/src/jws` — compact JWS signing and verification.
+- `wx-se884/hpke/src/jwe` — compact JWE encryption/decryption with AES-KW, direct AES-GCM, and HPKE integration.
+- `wx-se884/hpke/src/jwt` — JWT claims validation and replay-cache support.
 
-- **JOSE Suite (RFC 7515 / 7516 / 7517 / 7519 / 7638)**:
-  - **JWK / JWKS (RFC 7517)**: Key representation (`oct`, `OKP`, `EC`, `RSA`) and RFC 7638 SHA-256 Thumbprint calculation.
-  - **JWS (RFC 7515)**: Compact signing & verification (`HS256`, `HS384`, `HS512`, `EdDSA`) with algorithm confusion prevention and strict rejection of `alg: none`.
-  - **JWE (RFC 7516)**: 5-part compact encryption (`dir`, `A128KW`, `A256KW`, `HPKE-Base-X25519-SHA256-ChaCha20Poly1305`) with `A128GCM`, `A256GCM`, and `ChaCha20-Poly1305`.
-  - **JWT (RFC 7519)**: Token issuance and verification with clock-skew tolerance, expiration/not-before validation, audience checks, and replay cache.
+The deterministic key inputs exposed by the current API are intended for reproducible tests and protocol fixtures. Applications should supply keys from an appropriate secure key-management or randomness layer.
 
-- **High-Assurance Cryptographic Core**:
-  - Constant-time memory equality and timing-attack resistant primitives.
-  - Pure MoonBit arbitrary-precision arithmetic (`BigNat`) with Jacobian projective coordinate curve acceleration.
-  - Comprehensive test suites validated against official NIST CAVP, FIPS 197, RFC 7748, RFC 8439, and RFC 9180 test vectors.
+## Core capabilities
 
----
+### HPKE (RFC 9180)
 
-## Architecture & Module Layout
+- KEM: DHKEM(X25519, HKDF-SHA256) and DHKEM(P-256, HKDF-SHA256).
+- KDF: HKDF-SHA256, HKDF-SHA384, and HKDF-SHA512.
+- AEAD: AES-128-GCM, AES-256-GCM, ChaCha20-Poly1305, and Export-Only.
+- Modes: Base, Auth, PSK, and AuthPSK.
+- APIs: deterministic single-shot seal/open, stateful `HpkeContext`, sequence-number nonce derivation, and exporter keys.
 
-```
-moonbit-hpke/
-├── moon.mod.json              # Root module definition
-├── cmd/
-│   └── hpke-cli/              # CLI demonstration tool
-├── src/
-│   ├── core/                  # BigNat, Base64URL, Hex, PKCS#7, Constant-time utilities
-│   ├── crypto/                # SHA-2, HMAC, HKDF, AES-GCM, AES-KW, ChaCha20Poly1305, X25519, P-256, Ed25519
-│   ├── hpke/                  # RFC 9180 DHKEM, KDF, AEAD, Setup modes, Context, Single-shot APIs
-│   ├── jwk/                   # RFC 7517 JSON Web Key & Sets, RFC 7638 Thumbprints
-│   ├── jws/                   # RFC 7515 JSON Web Signature
-│   ├── jwe/                   # RFC 7516 JSON Web Encryption + HPKE in JWE
-│   └── jwt/                   # RFC 7519 JSON Web Token & Replay Cache
-└── .github/workflows/         # Cross-platform CI workflow
-```
+### JOSE
 
----
+- JWK/JWKS: `oct`, `OKP`, `EC`, and RSA-oriented key structures, public-key conversion, and thumbprints.
+- JWS: compact HS256/HS384/HS512 and EdDSA signing/verification with `alg: none` rejection.
+- JWE: five-part compact serialization for direct AES-GCM, AES-KW, ChaCha20-Poly1305, and HPKE-based key agreement.
+- JWT: compact signing, expiration/not-before/issuer/audience checks, clock-skew tolerance, and replay cache.
 
-## Quickstart
+## Quick start
 
-### Prerequisites
-
-Install the official [MoonBit](https://www.moonbitlang.com/) toolchain:
+Install MoonBit stable and verify the compiler version:
 
 ```bash
-# Unix / macOS / Linux
-curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
-
-# Windows (PowerShell)
-irm https://cli.moonbitlang.com/install/powershell.ps1 | iex
+moon --version
 ```
 
-### Build & Run Tests
+The repository is validated with MoonBit `moonc v0.10.9` or newer.
 
 ```bash
-# Format check
-moon fmt
-
-# Typecheck and lint check with 0 warnings
+moon fmt --check
 moon check --deny-warn
-
-# Run all test suites
-moon test
-
-# Run the CLI demonstration tool
+moon test --target native --deny-warn --no-parallelize
 moon run cmd/hpke-cli
 ```
 
----
+Repeatable PowerShell checks are also available:
 
-## Usage Examples
-
-### 1. RFC 9180 HPKE (Single-Shot Seal & Open)
-
-```moonbit
-let suite : @hpke.HpkeSuite = {
-  kem: DHKEM_X25519_HKDF_SHA256,
-  kdf: HKDF_SHA256,
-  aead: CHACHA20_POLY1305,
-}
-
-// Recipient key generation
-let sk_r = @core.hex_decode("6db9e242b206557d33a214e1315073b4e162de1e8e1e7d6a443109ce644f195e")
-let pk_r = @hpke.kem_derive_public_key(suite.kem, sk_r)
-
-// Ephemeral sender key & message
-let sk_e = @core.hex_decode("52c4a75f0640e347dec662450978797361bc419b904a4da8e18229a7e7ffcc7b")
-let info = @core.string_to_utf8_bytes("HPKE Session Info")
-let aad = @core.string_to_utf8_bytes("Authenticated metadata")
-let pt = @core.string_to_utf8_bytes("Secret payload to encrypt")
-
-// Sender seals
-let (enc, ct) = @hpke.hpke_seal_base_deterministic(suite, pk_r, info, aad, pt, sk_e)
-
-// Recipient opens
-let decrypted = @hpke.hpke_open_base(suite, enc, sk_r, info, aad, ct)
+```powershell
+pwsh -File scripts/acceptance_check.ps1
+pwsh -File scripts/source_stats.ps1
 ```
 
-### 2. RFC 7638 JWK Thumbprint
+## CLI demonstration
 
-```moonbit
-let key_bytes = @core.hex_decode("000102030405060708090a0b0c0d0e0f")
-let jwk = @jwk.Jwk::new_oct(key_bytes, kid="auth-key-01")
+`moon run cmd/hpke-cli` executes an end-to-end demonstration of HPKE, JWK thumbprints, JWS, JWE, and JWT. It uses fixed fixture keys so output is reproducible; it is not a production key generator.
 
-let thumbprint = jwk.thumbprint_sha256()
-// Outputs canonical SHA-256 Base64URL JWK thumbprint
+## Architecture
+
+```text
+moonbit-hpke/
+├── moon.mod
+├── cmd/hpke-cli/          # runnable end-to-end demonstration
+├── src/core/              # encoding, byte safety, BigNat
+├── src/crypto/            # cryptographic primitives
+├── src/hpke/              # RFC 9180 protocol and contexts
+├── src/jwk/               # RFC 7517 / RFC 7638
+├── src/jws/               # RFC 7515
+├── src/jwe/               # RFC 7516
+├── src/jwt/               # RFC 7519 and replay cache
+├── scripts/               # repeatable local acceptance checks
+└── .github/workflows/     # multi-platform CI
 ```
 
-### 3. RFC 7515 JSON Web Signature (JWS)
+Each directory is a MoonBit package described by its local `moon.pkg`. Public interfaces are generated with `moon info` into `pkg.generated.mbti` files for API review.
 
-```moonbit
-let secret = @core.string_to_utf8_bytes("my-256-bit-secret-key-for-hmac")
-let payload = @core.string_to_utf8_bytes("{\"sub\":\"alice\",\"admin\":true}")
+## Standards and test vectors
 
-// Sign
-let token = @jws.jws_sign("HS256", payload, secret, typ="JWT")
+The tests include interoperability and regression coverage for RFC 9180, FIPS 197, NIST SP 800-38D, RFC 3394, RFC 5869, RFC 7748, RFC 8032, RFC 8439, RFC 7638, and JOSE compact serialization.
 
-// Verify
-let (header, verified_payload) = @jws.jws_verify(token, secret)
+Boundary tests cover empty and short inputs, malformed encodings, tampering, incorrect keys, wrong metadata, sequence progression, exporter lengths, and replay identifiers.
+
+## Benchmarks
+
+Benchmarks use MoonBit's `@bench.T` harness with deterministic inputs and `b.keep(...)` to prevent dead-code elimination:
+
+```bash
+moon bench --package src/crypto --target native --release --deny-warn --no-parallelize
+moon bench --package src/hpke --target native --release --deny-warn --no-parallelize
 ```
 
-### 4. RFC 7516 JSON Web Encryption (JWE)
+Reference measurement on 2026-08-24 (Windows, Intel Core i9-14900HX, 24 cores / 32 logical processors, MoonBit `moonc v0.10.9+6e6c44045`, native release build):
 
-```moonbit
-let kek = @core.hex_decode("000102030405060708090a0b0c0d0e0f")
-let iv = @core.hex_decode("000000000000000000000001")
-let pt = @core.string_to_utf8_bytes("Sensitive financial transactions")
+| Benchmark | Mean |
+| --- | ---: |
+| SHA-256, 32 B | 551.62 ns |
+| SHA-256, 1 KiB | 4.92 µs |
+| SHA-256, 16 KiB | 73.06 µs |
+| HMAC-SHA256, 1 KiB | 7.33 µs |
+| Base64URL encode, 1 KiB | 4.56 µs |
+| AES-128 block | 521.84 ns |
+| AES-GCM seal, 1 KiB | 54.16 µs |
+| ChaCha20-Poly1305 seal, 1 KiB | 13.69 µs |
+| X25519 base multiplication | 561.24 ms |
+| HPKE Base seal, 1 KiB | 1.12 s |
+| HPKE Base open, 1 KiB | 1.07 s |
 
-// Encrypt with A128KW + A128GCM
-let compact_jwe = @jwe.jwe_encrypt("A128KW", "A128GCM", pt, kek, iv)
+Full output, fixtures, run counts, and protocol are in [`docs/benchmarks.md`](docs/benchmarks.md). These are local reference measurements, not cross-machine performance guarantees or security claims.
 
-// Decrypt
-let (header, decrypted) = @jwe.jwe_decrypt(compact_jwe, kek)
-```
+## Testing and CI
 
-### 5. RFC 7519 JSON Web Token (JWT)
+GitHub Actions runs on Ubuntu, macOS, and Windows. The workflow checks formatting, denies compiler warnings, regenerates and reviews public interfaces, runs coverage-enabled tests, executes supported native/JavaScript/WebAssembly targets, runs the CLI, and enforces the executable `.mbt` source threshold.
 
-```moonbit
-let claims = @jwt.Claims::new(
-  iss="https://auth.example.com",
-  sub="user-999",
-  aud="https://api.example.com",
-  exp=2000000000L,
-  jti="uuid-nonce-001"
-)
-
-let token = @jwt.jwt_sign(claims, "HS256", secret)
-
-// Verify with timestamp validation and audience assertion
-let verified = @jwt.jwt_verify(
-  token,
-  secret,
-  now=1710000000L,
-  expected_iss="https://auth.example.com",
-  expected_aud="https://api.example.com"
-)
-```
-
----
-
-## Test Vectors & Standards Compliance
-
-The library has been thoroughly tested against official specification test vectors:
-- **RFC 9180**: Hybrid Public Key Encryption (HPKE) Section 10 vectors.
-- **NIST SP 800-38D**: AES Galois/Counter Mode (GCM) test cases.
-- **FIPS 197**: AES-128 and AES-256 block encryption standard vectors.
-- **RFC 7748**: X25519 Diffie-Hellman Key Exchange vectors.
-- **RFC 8032**: Ed25519 Signature system test vectors.
-- **RFC 8439**: ChaCha20 and Poly1305 AEAD test vectors.
-- **RFC 7638**: JSON Web Key (JWK) Thumbprint standard vectors.
-- **RFC 3394**: AES Key Wrap Specification test cases.
-
----
+The current snapshot contains 47 executable `.mbt` files and 6,606 `.mbt` lines, counted by `scripts/source_stats.ps1`; generated `.mbti` files and build artifacts are excluded.
 
 ## License
 
-Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for details.
+Apache License 2.0. See [`LICENSE`](LICENSE).

@@ -2,43 +2,88 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main]
   pull_request:
-    branches: [ "main" ]
+    branches: [main]
+
+permissions:
+  contents: read
 
 jobs:
-  build-and-test:
-    name: Build & Test (MoonBit Native, JS, Wasm)
-    runs-on: ubuntu-latest
+  quality-and-test:
+    name: Check and test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
     steps:
-      - name: Checkout Code
+      - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Install MoonBit Toolchain
+      - name: Install MoonBit stable (Unix)
+        if: runner.os != 'Windows'
+        shell: bash
         run: |
           curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
-          echo "$HOME/.moon/bin" >> $GITHUB_PATH
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
 
-      - name: Check Code Formatting
+      - name: Install MoonBit stable (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
         run: |
-          moon fmt --dry-run
+          irm https://cli.moonbitlang.com/install/powershell.ps1 | iex
+          "$HOME/.moon/bin" | Out-File -FilePath $env:GITHUB_PATH -Append
 
-      - name: Typecheck and Lint
+      - name: Verify MoonBit version
+        shell: bash
         run: |
-          moon check --deny-warn
+          moon --version
+          moonc --version
+          version="$(moonc --version | sed -n 's/.*v\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\).*/\1 \2 \3/p')"
+          if [[ -z "$version" ]]; then
+            echo "Unable to parse the MoonBit compiler version"
+            exit 1
+          fi
+          read -r major minor patch <<< "$version"
+          if (( major < 0 || (major == 0 && minor < 10) || (major == 0 && minor == 10 && patch < 9) )); then
+            echo "MoonBit compiler v0.10.9 or newer is required"
+            exit 1
+          fi
 
-      - name: Run Native Unit Tests
-        run: |
-          moon test --target native
+      - name: Check formatting
+        run: moon fmt --check
 
-      - name: Run JS Unit Tests
-        run: |
-          moon test --target js
+      - name: Typecheck with denied warnings
+        run: moon check --deny-warn
 
-      - name: Run Wasm Unit Tests
+      - name: Regenerate and review public interfaces
+        shell: bash
         run: |
-          moon test --target wasm
+          moon info
+          git diff --exit-code -- '*.mbti'
 
-      - name: Build and Run CLI Demonstration
+      - name: Run default backend tests with coverage
+        run: moon test --deny-warn --enable-coverage --no-parallelize
+
+      - name: Run native tests
+        run: moon test --target native --deny-warn --enable-coverage --no-parallelize
+
+      - name: Run JavaScript tests
+        run: moon test --target js --deny-warn --no-parallelize
+
+      - name: Run WebAssembly tests
+        run: moon test --target wasm --deny-warn --no-parallelize
+
+      - name: Report coverage
         run: |
-          moon run cmd/hpke-cli
+          moon coverage report -f summary
+          moon coverage analyze
+
+      - name: Run CLI demonstration
+        run: moon run cmd/hpke-cli
+
+      - name: Enforce executable source threshold
+        shell: pwsh
+        run: pwsh -NoProfile -File scripts/source_stats.ps1

@@ -194,3 +194,37 @@ pub fn hpke_setup_psk_r(
   let shared_secret = kem_decap(suite.kem, enc, sk_r)
   key_schedule(suite, 1, shared_secret, info, psk, psk_id)
 }
+
+///|
+pub fn hpke_setup_auth_psk_s_deterministic(
+  suite : HpkeSuite,
+  pk_r : Bytes,
+  info : Bytes,
+  sk_s : Bytes,
+  sk_e : Bytes,
+  psk : Bytes,
+  psk_id : Bytes,
+) -> (Bytes, HpkeContext) raise @core.CoreError {
+  let (shared_secret, enc) = kem_auth_encap_deterministic(
+    suite.kem,
+    pk_r,
+    sk_s,
+    sk_e,
+  )
+  let ctx = key_schedule(suite, 3, shared_secret, info, psk, psk_id)
+  (enc, ctx)
+}
+
+///|
+pub fn hpke_setup_auth_psk_r(
+  suite : HpkeSuite,
+  enc : Bytes,
+  sk_r : Bytes,
+  info : Bytes,
+  pk_s : Bytes,
+  psk : Bytes,
+  psk_id : Bytes,
+) -> HpkeContext raise @core.CoreError {
+  let shared_secret = kem_auth_decap(suite.kem, enc, sk_r, pk_s)
+  key_schedule(suite, 3, shared_secret, info, psk, psk_id)
+}

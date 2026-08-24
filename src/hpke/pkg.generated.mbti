@@ -15,15 +15,23 @@ pub fn hpke_compute_nonce(Bytes, UInt64) -> Bytes
 
 pub fn hpke_open_auth(HpkeSuite, Bytes, Bytes, Bytes, Bytes, Bytes, Bytes) -> Bytes raise @core.CoreError
 
+pub fn hpke_open_auth_psk(HpkeSuite, Bytes, Bytes, Bytes, Bytes, Bytes, Bytes, Bytes, Bytes) -> Bytes raise @core.CoreError
+
 pub fn hpke_open_base(HpkeSuite, Bytes, Bytes, Bytes, Bytes, Bytes) -> Bytes raise @core.CoreError
 
 pub fn hpke_open_psk(HpkeSuite, Bytes, Bytes, Bytes, Bytes, Bytes, Bytes, Bytes) -> Bytes raise @core.CoreError
 
 pub fn hpke_seal_auth_deterministic(HpkeSuite, Bytes, Bytes, Bytes, Bytes, Bytes, Bytes) -> (Bytes, Bytes) raise @core.CoreError
 
+pub fn hpke_seal_auth_psk_deterministic(HpkeSuite, Bytes, Bytes, Bytes, Bytes, Bytes, Bytes, Bytes, Bytes) -> (Bytes, Bytes) raise @core.CoreError
+
 pub fn hpke_seal_base_deterministic(HpkeSuite, Bytes, Bytes, Bytes, Bytes, Bytes) -> (Bytes, Bytes) raise @core.CoreError
 
 pub fn hpke_seal_psk_deterministic(HpkeSuite, Bytes, Bytes, Bytes, Bytes, Bytes, Bytes, Bytes) -> (Bytes, Bytes) raise @core.CoreError
+
+pub fn hpke_setup_auth_psk_r(HpkeSuite, Bytes, Bytes, Bytes, Bytes, Bytes, Bytes) -> HpkeContext raise @core.CoreError
+
+pub fn hpke_setup_auth_psk_s_deterministic(HpkeSuite, Bytes, Bytes, Bytes, Bytes, Bytes, Bytes) -> (Bytes, HpkeContext) raise @core.CoreError
 
 pub fn hpke_setup_auth_r(HpkeSuite, Bytes, Bytes, Bytes, Bytes) -> HpkeContext raise @core.CoreError
 

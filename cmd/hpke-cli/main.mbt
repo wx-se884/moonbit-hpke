@@ -15,7 +15,7 @@
 ///|
 fn main {
   println("================================================================")
-  println("  moonbit-hpke & JOSE Cryptographic Security Suite (v1.0.0)")
+  println("  moonbit-hpke & JOSE Cryptographic Security Suite (v0.2.0)")
   println(
     "  RFC 9180 HPKE | RFC 7515 JWS | RFC 7516 JWE | RFC 7517/7638 JWK | RFC 7519 JWT",
   )
