@@ -41,7 +41,7 @@ jobs:
         run: |
           moon --version
           moonc --version
-          version="$(moonc --version | sed -n 's/.*v\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\).*/\1 \2 \3/p')"
+          version="$(moonc --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -n 1 | tr '.' ' ')"
           if [[ -z "$version" ]]; then
             echo "Unable to parse the MoonBit compiler version"
             exit 1
