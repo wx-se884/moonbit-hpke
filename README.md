@@ -123,7 +123,7 @@ Full output, fixtures, run counts, and protocol are in [`docs/benchmarks.md`](do
 
 GitHub Actions runs on Ubuntu, macOS, and Windows. The workflow checks formatting, denies compiler warnings, regenerates and reviews public interfaces, runs coverage-enabled tests, executes supported native/JavaScript/WebAssembly targets, runs the CLI, and enforces the executable `.mbt` source threshold.
 
-The current snapshot contains 47 executable `.mbt` files and 6,606 `.mbt` lines, counted by `scripts/source_stats.ps1`; generated `.mbti` files and build artifacts are excluded.
+The current snapshot contains 47 MoonBit source files and 7,280 physical `.mbt` lines (6,606 nonblank and 5,702 non-comment code lines), counted by `scripts/source_stats.ps1`; generated `.mbti` files and build artifacts are excluded.
 
 ## License
 
